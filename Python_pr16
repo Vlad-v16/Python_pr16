@@ -1,0 +1,100 @@
+from abc import ABC,abstractmethod
+
+class Book:
+    def __init__(self,title,author):
+        self.title = title
+        self.author = author
+
+    def update(self,title,author):
+        self.title = title
+        self.author = author
+
+class Print:
+    def display(self,book: Book):
+        print(f"{book.title} by {book.author}")
+
+class Save:
+    def save_to_file(self,book: Book,filename):
+        with open(filename,'w') as f:
+            f.write(f"{book.title} by {book.author}")
+
+class PaymentMethod(ABC):
+    @abstractmethod
+    def pay(self,amount):
+        pass
+
+class CreditCard(PaymentMethod):
+    def pay(self,amount):
+        print(f"Paid {amount} using CC")
+
+class PayPal(PaymentMethod):
+    def pay(self,amount):
+        print(f"Paid {amount} using PayPal")
+
+class Crypto(PaymentMethod):
+    def pay(self,amount):
+        print(f"Paid {amount} using Crypto")
+
+class ApplePay(PaymentMethod):
+    def pay(self,amount):
+        print(f"Paid {amount} using ApplePay")
+
+class PaymentProcess:
+    def process_pay(self,method: PaymentMethod,amount):
+        method.pay(amount)
+
+class Notifier(ABC):
+    @abstractmethod
+    def notify(self,message):
+        pass
+
+class Email(Notifier):
+    def notify(self,message):
+        print(f"Email: {message}")
+
+class SMS(Notifier):
+    def notify(self,message):
+        print(f"SMS: {message}")
+
+class PUSH(Notifier):
+    def notify(self,message):
+        print(f"Push: {message}")
+
+class TG(Notifier):
+    def notify(self,message):
+        print(f"Telegram: {message}")
+
+class Service:
+    def __init__(self,notifier: Notifier):
+        self.notifier = notifier
+    def send(self,message):
+        self.notifier.notify(message)
+
+if __name__ == "__main__":
+    print("---First Exercise---")
+    book = Book("Vova and Strange adventure","Kyryllo Eshkereskin")
+    printer = Print()
+    saver = Save()
+    printer.display(book)
+    saver.save_to_file(book,"biblary.txt")
+    book.update("Hostel adventure","Vladislav Chumak")
+    printer.display(book)
+    saver.save_to_file(book,"main_lib.txt")
+
+    print("\n---Second Exercise---")
+    processor = PaymentProcess()
+    processor.process_pay(CreditCard(),100)
+    processor.process_pay(PayPal(), 200)
+    processor.process_pay(Crypto(), 300)
+    processor.process_pay(ApplePay(), 400)
+
+    email_service = Service(Email())
+    SMS_service = Service(SMS())
+    PUSH_service = Service(PUSH())
+    telegram_service = Service(TG())
+
+    print("\n---Last Exercise---")
+    email_service.send("Your order has been shipped.")
+    SMS_service.send("Your verification code is 123456.")
+    PUSH_service.send("You have a new message.")
+    telegram_service.send("You've received a new invoice.")
